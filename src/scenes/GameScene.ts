@@ -43,6 +43,9 @@ export class GameScene extends Phaser.Scene {
 
   // MVP 게임 오브젝트와 시스템을 초기화한다.
   public create(): void {
+    // TODO: Cloudflare 배포 확인 후 제거 가능한 임시 로드 로그.
+    console.log('[Galaxy Defence] GameScene loaded');
+
     this.score = 0;
     this.stage = STAGE_START;
     this.status = 'playing';
@@ -67,6 +70,15 @@ export class GameScene extends Phaser.Scene {
 
     this.cursors = keyboard.createCursorKeys();
     this.fireKey = keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+    // Cloudflare 배포 화면에서 Phaser 씬 시작 여부를 즉시 확인하는 임시 표시다.
+    this.add
+      .text(12, 52, 'Galaxy Defence MVP Loaded', {
+        fontFamily: 'Consolas, ui-monospace, monospace',
+        fontSize: '12px',
+        color: '#7df9ff',
+      })
+      .setDepth(30);
 
     // TODO: 포탑, 방어막, 업그레이드, 보스는 MVP 이후 별도 시스템으로 추가한다.
     this.collisionManager = new CollisionManager({

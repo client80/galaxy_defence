@@ -25,10 +25,30 @@ const config: Phaser.Types.Core.GameConfig = {
   scene: [GameScene],
 };
 
-const game = new Phaser.Game(config);
+let game: Phaser.Game | null = null;
+
+// DOM 컨테이너가 준비된 뒤 Phaser를 부팅해 정적 호스팅 환경의 타이밍 문제를 피한다.
+const bootGame = (): void => {
+  const app = document.querySelector<HTMLDivElement>('#app');
+
+  if (app === null) {
+    throw new Error('[Galaxy Defence] #app container was not found.');
+  }
+
+  // TODO: Cloudflare 배포 확인 후 제거 가능한 임시 부팅 로그.
+  console.log('[Galaxy Defence] Booting Phaser');
+  game = new Phaser.Game(config);
+};
+
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', bootGame, { once: true });
+} else {
+  bootGame();
+}
 
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
-    game.destroy(true);
+    game?.destroy(true);
+    game = null;
   });
 }
