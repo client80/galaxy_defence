@@ -4,6 +4,12 @@ import './style.css';
 import { GameScene } from './scenes/GameScene';
 import { GAME_HEIGHT, GAME_WIDTH } from './utils/constants';
 
+declare global {
+  interface Window {
+    __GALAXY_DEFENCE_BOOTED__?: boolean;
+  }
+}
+
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   parent: 'app',
@@ -38,6 +44,7 @@ const bootGame = (): void => {
   // TODO: Cloudflare 배포 확인 후 제거 가능한 임시 부팅 로그.
   console.log('[Galaxy Defence] Booting Phaser');
   game = new Phaser.Game(config);
+  window.__GALAXY_DEFENCE_BOOTED__ = true;
 };
 
 if (document.readyState === 'loading') {
