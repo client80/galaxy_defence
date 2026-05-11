@@ -8,41 +8,6 @@
   </head>
   <body>
     <div id="app"></div>
-    <script type="module">
-      const bootStaticFallback = async (reason) => {
-        if (window.__GALAXY_DEFENCE_BOOTED__ || document.querySelector('#app canvas')) {
-          return;
-        }
-
-        console.warn('[Galaxy Defence] Vite entry did not boot; starting static fallback.', reason);
-
-        const fallbackPaths = [
-          '/cloudflare-static-fallback.js',
-          '/public/cloudflare-static-fallback.js',
-        ];
-        let lastError = reason;
-
-        for (const path of fallbackPaths) {
-          try {
-            await import(/* @vite-ignore */ path);
-            return;
-          } catch (error) {
-            lastError = error;
-          }
-        }
-
-        console.error('[Galaxy Defence] Static fallback failed.', lastError);
-      };
-
-      try {
-        await import('/src/main.ts');
-      } catch (error) {
-        await bootStaticFallback(error);
-      }
-
-      window.setTimeout(() => {
-        void bootStaticFallback(new Error('Phaser canvas was not created in time.'));
-      }, 2000);
-    </script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
