@@ -14,12 +14,20 @@ export class Hud {
   private readonly hpText: Phaser.GameObjects.Text;
   private readonly stageText: Phaser.GameObjects.Text;
   private readonly centerText: Phaser.GameObjects.Text;
+  private readonly ammoText: Phaser.GameObjects.Text;
 
-  // 점수, 기지 체력, 스테이지 정보를 화면 상단에 표시한다.
+  // 점수, 기지 체력, 스테이지, 탄약 정보를 화면에 표시한다.
   constructor(scene: Phaser.Scene) {
     this.scoreText = scene.add.text(18, HUD_TOP, '', HUD_TEXT_STYLE).setDepth(10);
     this.hpText = scene.add.text(GAME_WIDTH / 2, HUD_TOP, '', HUD_TEXT_STYLE).setOrigin(0.5, 0).setDepth(10);
     this.stageText = scene.add.text(GAME_WIDTH - 18, HUD_TOP, '', HUD_TEXT_STYLE).setOrigin(1, 0).setDepth(10);
+    
+    // 탄약 및 무기 상태 텍스트
+    this.ammoText = scene.add.text(18, GAME_HEIGHT - 30, '', {
+      ...HUD_TEXT_STYLE,
+      fontSize: '14px',
+    }).setOrigin(0, 1).setDepth(10);
+
     this.centerText = scene.add
       .text(GAME_WIDTH / 2, GAME_HEIGHT / 2, '', {
         fontFamily: 'Consolas, ui-monospace, monospace',
@@ -36,11 +44,22 @@ export class Hud {
     this.scoreText.setText(`Score ${values.score}`);
     this.hpText.setText(`Base HP ${values.baseHp}`);
     this.stageText.setText(`Stage ${values.stage}`);
+
+    if (values.ammo && values.currentWeapon) {
+      const w = values.currentWeapon;
+      const typeStr = w === 'TYPE_A' ? 'A (Long)' : w === 'TYPE_B' ? 'B (Med)' : 'C (Heavy)';
+      const a = values.ammo[w];
+      this.ammoText.setText(`WPN: ${typeStr} | AMMO: ${a}\n[1] A  [2] B  [3] C`);
+    }
   }
 
   public showCenterMessage(message: string, color: string): void {
     this.centerText.setText(message);
     this.centerText.setColor(color);
     this.centerText.setVisible(true);
+  }
+
+  public hideCenterMessage(): void {
+    this.centerText.setVisible(false);
   }
 }

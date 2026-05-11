@@ -79,7 +79,12 @@ export class EnemyFormation {
       for (let column = 0; column < ENEMY_COLUMNS; column += 1) {
         const x = startX + column * ENEMY_SPACING_X;
         const y = ENEMY_START_Y + row * ENEMY_SPACING_Y;
-        const enemy = new Enemy(this.scene, x, y, index);
+        
+        // 3스테이지 이상부터 일부 적을 특수 적으로 생성
+        const isSpecial = this.stage >= 3 && Phaser.Math.Between(0, 100) < 20 + (this.stage * 5);
+        const hp = isSpecial ? 3 : 1; // 특수 적은 체력 3 (하지만 collision manager에서 타입만 체크중)
+
+        const enemy = new Enemy(this.scene, x, y, index, isSpecial, hp);
 
         this.group.add(enemy);
         index += 1;
@@ -116,7 +121,7 @@ export class EnemyFormation {
       return;
     }
 
-    this.nextDiveAt = time + ENEMY_DIVE_INTERVAL_MS;
+    this.nextDiveAt = time + ENEMY_DIVE_INTERVAL_MS - (this.stage * 150); // 스테이지 높을수록 출격 빈도 증가
 
     const candidates = this.getFormationEnemies();
 

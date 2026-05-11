@@ -14,9 +14,11 @@ export class Enemy extends Phaser.GameObjects.Triangle {
   private readonly homeY: number;
   private readonly divePhase: number;
   private enemyState: EnemyState;
+  public isSpecial: boolean;
+  public hp: number;
 
   // 편대에 배치되는 적 기체를 Phaser 도형으로 만든다.
-  constructor(scene: Phaser.Scene, x: number, y: number, index: number) {
+  constructor(scene: Phaser.Scene, x: number, y: number, index: number, isSpecial: boolean = false, hp: number = 1) {
     super(
       scene,
       x,
@@ -27,7 +29,7 @@ export class Enemy extends Phaser.GameObjects.Triangle {
       0,
       ENEMY_WIDTH / 2,
       ENEMY_HEIGHT,
-      COLORS.enemy,
+      isSpecial ? COLORS.specialEnemy : COLORS.enemy,
       1,
     );
 
@@ -35,6 +37,8 @@ export class Enemy extends Phaser.GameObjects.Triangle {
     this.homeY = y;
     this.divePhase = index * 0.73;
     this.enemyState = 'formation';
+    this.isSpecial = isSpecial;
+    this.hp = hp;
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -80,7 +84,7 @@ export class Enemy extends Phaser.GameObjects.Triangle {
     this.enemyState = 'diving';
     this.setFillStyle(COLORS.enemyDiving, 1);
     this.getBody().setImmovable(false);
-    this.getBody().setVelocity(0, ENEMY_DIVE_SPEED);
+    this.getBody().setVelocity(0, ENEMY_DIVE_SPEED + (this.isSpecial ? -50 : 0)); // 특수 적은 약간 느림
   }
 
   // 급강하 중인 적에게 가벼운 좌우 흔들림을 준다.
@@ -91,7 +95,7 @@ export class Enemy extends Phaser.GameObjects.Triangle {
 
     const drift = Math.sin(time / 260 + this.divePhase) * ENEMY_DIVE_DRIFT;
     this.rotation = Phaser.Math.DegToRad(drift * 0.09);
-    this.getBody().setVelocity(drift, ENEMY_DIVE_SPEED);
+    this.getBody().setVelocity(drift, this.getBody().velocity.y);
   }
 
   public getBody(): Phaser.Physics.Arcade.Body {

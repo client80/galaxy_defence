@@ -14,4 +14,10 @@ export type HudValues = {
   score: number;
   baseHp: number;
   stage: number;
+  ammo?: Record<MissileType, number>;
+  currentWeapon?: MissileType;
 };
+
+export type MissileType = 'TYPE_A' | 'TYPE_B' | 'TYPE_C';
+export type ItemType = 'AMMO_RELOAD' | 'POWER_BOOST' | 'REINFORCEMENT';
+

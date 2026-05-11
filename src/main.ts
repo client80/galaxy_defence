@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 
 import './style.css';
 import { GameScene } from './scenes/GameScene';
+import { TitleScene } from './scenes/TitleScene';
 import { GAME_HEIGHT, GAME_WIDTH } from './utils/constants';
 
 declare global {
@@ -28,7 +29,7 @@ const config: Phaser.Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [GameScene],
+  scene: [TitleScene, GameScene],
 };
 
 let game: Phaser.Game | null = null;
